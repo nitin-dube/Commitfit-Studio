@@ -1,8 +1,8 @@
 import { useAuth } from '../../context/AuthContext';
-import { FiBell, FiUser, FiLogOut } from 'react-icons/fi';
+import { FiBell, FiUser, FiLogOut, FiMenu } from 'react-icons/fi';
 import './Topbar.css';
 
-const Topbar = () => {
+const Topbar = ({ onToggleSidebar }) => {
     const { user, logout } = useAuth();
 
     const handleLogout = () => {
@@ -14,6 +14,9 @@ const Topbar = () => {
     return (
         <header className="topbar">
             <div className="topbar-left">
+                <button className="menu-btn" onClick={onToggleSidebar}>
+                    <FiMenu />
+                </button>
                 <h1 className="page-title">Commitfit Studio</h1>
             </div>
 

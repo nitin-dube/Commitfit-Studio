@@ -20,17 +20,20 @@ const menuItems = [
     { path: '/settings', icon: FiSettings, label: 'Settings' }
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, onClose }) => {
     const location = useLocation();
 
     return (
-        <aside className="sidebar">
+        <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
             <div className="sidebar-header">
-                <div className="logo-icon">💪</div>
-                <div className="logo-text">
-                    <h1>Commitfit</h1>
-                    <span>Studio</span>
+                <div className="sidebar-logo">
+                    <div className="logo-icon">💪</div>
+                    <div className="logo-text">
+                        <h1>Commitfit</h1>
+                        <span>Studio</span>
+                    </div>
                 </div>
+                <button className="close-sidebar-btn" onClick={onClose}>×</button>
             </div>
 
             <nav className="sidebar-nav">
@@ -43,6 +46,7 @@ const Sidebar = () => {
                             key={item.path}
                             to={item.path}
                             className={`nav-item ${isActive ? 'active' : ''}`}
+                            onClick={onClose}
                         >
                             <Icon className="nav-icon" />
                             <span className="nav-label">{item.label}</span>
