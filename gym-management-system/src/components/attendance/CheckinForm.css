@@ -1,0 +1,20 @@
+.checkin-form-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+}
+
+.form-title {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-lg);
+}
+
+.checkin-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+}

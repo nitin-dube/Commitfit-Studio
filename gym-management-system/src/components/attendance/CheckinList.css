@@ -1,0 +1,113 @@
+.checkin-list-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    max-height: 600px;
+    display: flex;
+    flex-direction: column;
+}
+
+.list-title {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.checkin-count {
+    background: var(--success-gradient);
+    color: white;
+    font-size: var(--font-size-sm);
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+}
+
+.checkin-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.checkin-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-base);
+    animation: slideInRight 0.3s ease-out;
+}
+
+.checkin-item:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--primary-color);
+    transform: translateX(4px);
+}
+
+.checkin-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--success-gradient);
+    border-radius: 50%;
+    color: white;
+    font-size: 1.25rem;
+}
+
+.checkin-info {
+    flex: 1;
+}
+
+.member-name {
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 0.25rem;
+}
+
+.checkin-time {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.empty-checkins {
+    padding: var(--spacing-2xl);
+    text-align: center;
+}
+
+.empty-checkins p {
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* Scrollbar */
+.checkin-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.checkin-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.checkin-list::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: var(--radius-sm);
+}
+
+.checkin-list::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}

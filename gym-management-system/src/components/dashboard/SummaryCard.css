@@ -1,0 +1,116 @@
+.summary-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    transition: all var(--transition-base);
+    position: relative;
+    overflow: hidden;
+}
+
+.summary-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--primary-gradient);
+    opacity: 0;
+    transition: opacity var(--transition-base);
+}
+
+.summary-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.5);
+}
+
+.summary-card:hover::before {
+    opacity: 1;
+}
+
+.summary-card.gradient-primary::before {
+    background: var(--primary-gradient);
+}
+
+.summary-card.gradient-success::before {
+    background: var(--success-gradient);
+}
+
+.summary-card.gradient-warning::before {
+    background: var(--warning-gradient);
+}
+
+.summary-card.gradient-secondary::before {
+    background: var(--secondary-gradient);
+}
+
+.summary-icon {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary-gradient);
+    border-radius: var(--radius-md);
+    color: white;
+    font-size: 1.75rem;
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+}
+
+.gradient-primary .summary-icon {
+    background: var(--primary-gradient);
+}
+
+.gradient-success .summary-icon {
+    background: var(--success-gradient);
+}
+
+.gradient-warning .summary-icon {
+    background: var(--warning-gradient);
+}
+
+.gradient-secondary .summary-icon {
+    background: var(--secondary-gradient);
+}
+
+.summary-content {
+    flex: 1;
+}
+
+.summary-label {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin: 0 0 var(--spacing-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}
+
+.summary-value {
+    font-size: var(--font-size-3xl);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+    line-height: 1;
+}
+
+.summary-trend {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    margin: var(--spacing-sm) 0 0;
+}
+
+.summary-trend.trend-up {
+    color: var(--success-color);
+}
+
+.summary-trend.trend-down {
+    color: var(--danger-color);
+}
