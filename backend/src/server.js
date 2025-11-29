@@ -55,10 +55,12 @@ app.use(errorHandler);
 // Start server
 const PORT = config.port;
 
-app.listen(PORT, () => {
-    console.log(`\n🚀 Server running in ${config.nodeEnv} mode on port ${PORT}`);
-    console.log(`📡 API: http://localhost:${PORT}/api`);
-    console.log(`🌐 Frontend: ${config.frontendUrl}\n`);
-});
+if (!process.env.VERCEL) {
+    app.listen(PORT, () => {
+        console.log(`\n🚀 Server running in ${config.nodeEnv} mode on port ${PORT}`);
+        console.log(`📡 API: http://localhost:${PORT}/api`);
+        console.log(`🌐 Frontend: ${config.frontendUrl}\n`);
+    });
+}
 
 export default app;
