@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
@@ -14,6 +15,22 @@ const LoginPage = () => {
 
     const { login } = useAuth();
     const navigate = useNavigate();
+
+    // Warm up the server on component mount
+    useEffect(() => {
+        const warmUpServer = async () => {
+            try {
+                console.log('🔥 Waking up server...');
+                await api.get('/health');
+                console.log('✅ Server is awake!');
+            } catch (error) {
+                // Ignore errors, this is just a warm-up
+                console.log('Server warm-up ping failed (expected if offline/sleeping)');
+            }
+        };
+
+        warmUpServer();
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
