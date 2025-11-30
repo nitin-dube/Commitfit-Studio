@@ -1,0 +1,15 @@
+{
+  "users": [
+    {
+      "id": "1764483047530756",
+      "name": "Admin",
+      "email": "admin@commitfitstudio.com",
+      "password": "$2a$10$LNv1uGtKOtRfb3h2sAkifOJimak4ayN48UtMNobpzW0QdbM5.VIT.",
+      "role": "admin",
+      "createdAt": "2025-11-30T06:10:47.530Z",
+      "updatedAt": "2025-11-30T06:10:47.531Z"
+    }
+  ],
+  "members": [],
+  "attendance": []
+}

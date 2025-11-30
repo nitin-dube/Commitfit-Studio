@@ -1,5 +1,4 @@
-import Attendance from '../models/Attendance.js';
-import Member from '../models/Member.js';
+import { attendanceDb, memberDb } from '../db.js';
 import { successResponse, errorResponse } from '../utils/apiResponse.js';
 
 // @desc    Mark check-in
@@ -14,12 +13,7 @@ export const markCheckin = async (req, res, next) => {
         }
 
         // Find member
-        const member = await Member.findOne({
-            $or: [
-                { memberId: memberIdOrPhone },
-                { phone: memberIdOrPhone }
-            ]
-        });
+        const member = memberDb.findByMemberIdOrPhone(memberIdOrPhone);
 
         if (!member) {
             return errorResponse(res, 'Member not found', 404);
@@ -34,26 +28,23 @@ export const markCheckin = async (req, res, next) => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        const existingCheckin = await Attendance.findOne({
-            memberId: member._id,
-            checkinTime: { $gte: today }
-        });
+        const existingCheckin = attendanceDb.findByMemberAndDate(member.id, today);
 
         if (existingCheckin) {
             return errorResponse(res, 'Member already checked in today', 400);
         }
 
         // Create check-in record
-        const attendance = await Attendance.create({
-            memberId: member._id,
+        const attendance = attendanceDb.create({
+            memberId: member.id,
             memberName: member.name
         });
 
         return successResponse(
             res,
             {
-                id: attendance._id,
-                memberId: member._id,
+                id: attendance.id,
+                memberId: member.id,
                 memberName: member.name,
                 checkinTime: attendance.checkinTime
             },
@@ -73,13 +64,11 @@ export const getTodayCheckins = async (req, res, next) => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        const checkins = await Attendance.find({
-            checkinTime: { $gte: today }
-        }).sort({ checkinTime: -1 });
+        const checkins = attendanceDb.findAll({ startDate: today });
 
         // Format response
         const formattedCheckins = checkins.map(c => ({
-            id: c._id,
+            id: c.id,
             memberId: c.memberId,
             memberName: c.memberName,
             checkinTime: c.checkinTime
@@ -99,9 +88,7 @@ export const getWeeklyCheckins = async (req, res, next) => {
         const today = new Date();
         const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-        const checkins = await Attendance.find({
-            checkinTime: { $gte: weekAgo }
-        });
+        const checkins = attendanceDb.findAll({ startDate: weekAgo });
 
         // Group by day
         const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];

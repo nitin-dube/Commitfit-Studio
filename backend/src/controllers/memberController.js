@@ -1,4 +1,4 @@
-import Member from '../models/Member.js';
+import { memberDb } from '../db.js';
 import { successResponse, errorResponse } from '../utils/apiResponse.js';
 
 // @desc    Get all members
@@ -7,19 +7,7 @@ import { successResponse, errorResponse } from '../utils/apiResponse.js';
 export const getMembers = async (req, res, next) => {
     try {
         const { search } = req.query;
-        let query = {};
-
-        if (search) {
-            query = {
-                $or: [
-                    { name: { $regex: search, $options: 'i' } },
-                    { memberId: { $regex: search, $options: 'i' } },
-                    { phone: { $regex: search, $options: 'i' } }
-                ]
-            };
-        }
-
-        const members = await Member.find(query).sort({ createdAt: -1 });
+        const members = memberDb.findAll({ search });
 
         return successResponse(res, members, 'Members retrieved successfully');
     } catch (error) {
@@ -32,7 +20,7 @@ export const getMembers = async (req, res, next) => {
 // @access  Private
 export const getMember = async (req, res, next) => {
     try {
-        const member = await Member.findById(req.params.id);
+        const member = memberDb.findById(req.params.id);
 
         if (!member) {
             return errorResponse(res, 'Member not found', 404);
@@ -49,7 +37,7 @@ export const getMember = async (req, res, next) => {
 // @access  Private
 export const createMember = async (req, res, next) => {
     try {
-        const member = await Member.create(req.body);
+        const member = memberDb.create(req.body);
 
         return successResponse(res, member, 'Member created successfully', 201);
     } catch (error) {
@@ -62,11 +50,7 @@ export const createMember = async (req, res, next) => {
 // @access  Private
 export const updateMember = async (req, res, next) => {
     try {
-        const member = await Member.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            { new: true, runValidators: true }
-        );
+        const member = memberDb.update(req.params.id, req.body);
 
         if (!member) {
             return errorResponse(res, 'Member not found', 404);
@@ -89,11 +73,7 @@ export const updateMemberStatus = async (req, res, next) => {
             return errorResponse(res, 'Status is required', 400);
         }
 
-        const member = await Member.findByIdAndUpdate(
-            req.params.id,
-            { status },
-            { new: true, runValidators: true }
-        );
+        const member = memberDb.update(req.params.id, { status });
 
         if (!member) {
             return errorResponse(res, 'Member not found', 404);
@@ -110,11 +90,7 @@ export const updateMemberStatus = async (req, res, next) => {
 // @access  Private
 export const deleteMember = async (req, res, next) => {
     try {
-        const member = await Member.findByIdAndUpdate(
-            req.params.id,
-            { status: 'Inactive' },
-            { new: true }
-        );
+        const member = memberDb.update(req.params.id, { status: 'Inactive' });
 
         if (!member) {
             return errorResponse(res, 'Member not found', 404);

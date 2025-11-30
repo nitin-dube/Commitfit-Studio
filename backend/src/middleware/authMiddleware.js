@@ -1,4 +1,4 @@
-import User from '../models/User.js';
+import { userDb } from '../db.js';
 import { verifyToken } from '../utils/jwt.js';
 import { errorResponse } from '../utils/apiResponse.js';
 
@@ -23,13 +23,16 @@ export const protect = async (req, res, next) => {
         }
 
         // Get user from token
-        const user = await User.findById(decoded.id).select('-password');
+        const user = userDb.findById(decoded.id);
 
         if (!user) {
             return errorResponse(res, 'User not found', 404);
         }
 
-        req.user = user;
+        // Remove password from user object
+        const { password, ...userWithoutPassword } = user;
+
+        req.user = userWithoutPassword;
         next();
     } catch (error) {
         return errorResponse(res, 'Not authorized to access this route', 401);

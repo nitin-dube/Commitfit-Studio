@@ -1,4 +1,4 @@
-import User from '../models/User.js';
+import { userDb } from '../db.js';
 import { generateToken } from '../utils/jwt.js';
 import { successResponse, errorResponse } from '../utils/apiResponse.js';
 
@@ -9,14 +9,8 @@ export const register = async (req, res, next) => {
     try {
         const { name, email, password, role } = req.body;
 
-        // Check if user already exists
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return errorResponse(res, 'User already exists with this email', 400);
-        }
-
         // Create user
-        const user = await User.create({
+        const user = await userDb.create({
             name,
             email,
             password,
@@ -25,6 +19,9 @@ export const register = async (req, res, next) => {
 
         return successResponse(res, null, 'User registered successfully', 201);
     } catch (error) {
+        if (error.message === 'User already exists with this email') {
+            return errorResponse(res, error.message, 400);
+        }
         next(error);
     }
 };
@@ -41,26 +38,26 @@ export const login = async (req, res, next) => {
             return errorResponse(res, 'Please provide email and password', 400);
         }
 
-        // Find user (include password for comparison)
-        const user = await User.findOne({ email }).select('+password');
+        // Find user
+        const user = await userDb.findByEmail(email);
 
         if (!user) {
             return errorResponse(res, 'Invalid credentials', 401);
         }
 
         // Check password
-        const isPasswordValid = await user.comparePassword(password);
+        const isPasswordValid = await userDb.comparePassword(password, user.password);
 
         if (!isPasswordValid) {
             return errorResponse(res, 'Invalid credentials', 401);
         }
 
         // Generate token
-        const token = generateToken(user._id);
+        const token = generateToken(user.id);
 
         // Remove password from output
         const userResponse = {
-            id: user._id,
+            id: user.id,
             name: user.name,
             email: user.email,
             role: user.role
@@ -78,7 +75,7 @@ export const login = async (req, res, next) => {
 export const getMe = async (req, res, next) => {
     try {
         const user = {
-            id: req.user._id,
+            id: req.user.id,
             name: req.user.name,
             email: req.user.email,
             role: req.user.role

@@ -1,5 +1,4 @@
-import Member from '../models/Member.js';
-import Attendance from '../models/Attendance.js';
+import { memberDb, attendanceDb } from '../db.js';
 import { successResponse } from '../utils/apiResponse.js';
 
 // @desc    Get dashboard summary
@@ -8,22 +7,20 @@ import { successResponse } from '../utils/apiResponse.js';
 export const getDashboardSummary = async (req, res, next) => {
     try {
         // Total members
-        const totalMembers = await Member.countDocuments();
+        const totalMembers = memberDb.count();
 
         // Active members
-        const activeMembers = await Member.countDocuments({ status: 'Active' });
+        const activeMembers = memberDb.count({ status: 'Active' });
 
         // Today's check-ins
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        const todaysCheckins = await Attendance.countDocuments({
-            checkinTime: { $gte: today }
-        });
+        const todaysCheckins = attendanceDb.count({ startDate: today });
 
         // Pending payments (mock for now - would need Payment model)
         // Calculate based on expired members or members nearing expiry
-        const pendingPayments = await Member.countDocuments({ status: 'Expired' });
+        const pendingPayments = memberDb.count({ status: 'Expired' });
 
         const summary = {
             totalMembers,

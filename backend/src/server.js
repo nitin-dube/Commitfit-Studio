@@ -3,35 +3,20 @@ import cors from 'cors';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import config from './config/env.js';
-import connectDB from './config/db.js';
+import { initDb } from './db.js';
 import routes from './routes/index.js';
 import errorHandler from './middleware/errorHandler.js';
 
 const app = express();
 
-// Connect to database
-connectDB();
+// Initialize JSON database
+await initDb();
+
 
 // Middleware
 app.use(helmet()); // Security headers
 app.use(cors({
-    origin: (origin, callback) => {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-
-        // Allow local development
-        if (origin.startsWith('http://localhost') ||
-            origin.startsWith('http://192.168.') ||
-            origin.startsWith('http://10.') ||
-            origin.startsWith('http://172.') ||
-            origin === config.frontendUrl ||
-            origin.endsWith('.vercel.app')) {
-            return callback(null, true);
-        }
-
-        const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-        return callback(new Error(msg), false);
-    },
+    origin: true, // Allow all origins for now
     credentials: true
 })); // CORS
 app.use(express.json()); // Parse JSON bodies
