@@ -12,6 +12,7 @@ const LoginPage = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [serverWarming, setServerWarming] = useState(false);
 
     const { login } = useAuth();
     const navigate = useNavigate();
@@ -21,11 +22,21 @@ const LoginPage = () => {
         const warmUpServer = async () => {
             try {
                 console.log('🔥 Waking up server...');
-                await api.get('/health');
+                setServerWarming(true);
+
+                // Add timeout to prevent hanging
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+                await api.get('/health', { signal: controller.signal });
+                clearTimeout(timeoutId);
+
                 console.log('✅ Server is awake!');
             } catch (error) {
                 // Ignore errors, this is just a warm-up
-                console.log('Server warm-up ping failed (expected if offline/sleeping)');
+                console.log('Server warm-up completed or timed out');
+            } finally {
+                setServerWarming(false);
             }
         };
 
@@ -104,9 +115,9 @@ const LoginPage = () => {
                         type="submit"
                         variant="primary"
                         fullWidth
-                        disabled={loading}
+                        disabled={loading || serverWarming}
                     >
-                        {loading ? 'Logging in...' : 'Login'}
+                        {serverWarming ? 'Waking server...' : loading ? 'Logging in...' : 'Login'}
                     </Button>
 
                     <div className="login-hint">

@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const config = {
-    port: process.env.PORT || 5000,
+    port: 5000, // Force port 5000 to avoid conflict with frontend
     nodeEnv: process.env.NODE_ENV || 'development',
     mongodbUri: process.env.MONGODB_URI,
     jwtSecret: process.env.JWT_SECRET,
